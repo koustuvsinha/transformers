@@ -200,6 +200,9 @@ class PerceptionLMModel(PerceptionLMPreTrainedModel):
         Returns:
             image_features (`torch.Tensor`): Image feature tensor of shape `(num_tiles, num_patches, embed_dim)`).
         """
+        # sometimes in the input num_tiles is missing
+        if pixel_values.dim() < 5:
+            pixel_values = pixel_values.unsqueeze(1)
         image_outputs = self.vision_tower(pixel_values.flatten(0, 1))
         image_outputs = image_outputs.last_hidden_state
         if self.config.vision_use_cls_token:
